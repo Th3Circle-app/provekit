@@ -1,0 +1,15 @@
+{
+  "name": "agentguard",
+  "version": "0.1.0",
+  "description": "Attack-tested security scanning for AI-generated code. Catches leaked secrets and the insecure patterns AI agents love to introduce, mapped to the OWASP Top 10. Zero dependencies.",
+  "bin": { "agentguard": "bin/agentguard.js" },
+  "scripts": {
+    "demo": "node bin/agentguard.js examples/vulnerable.js",
+    "test": "node --test"
+  },
+  "keywords": ["security", "ai", "llm", "owasp", "secrets", "sast", "devsecops", "cursor", "claude-code", "code-review", "ci"],
+  "author": "Harrison C. Songolo",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "files": ["bin", "src", "README.md", "LICENSE"]
+}

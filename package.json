@@ -1,15 +1,18 @@
 {
-  "name": "agentguard",
+  "name": "provekit",
   "version": "0.1.0",
   "description": "Attack-tested security scanning for AI-generated code. Catches leaked secrets and the insecure patterns AI agents love to introduce, mapped to the OWASP Top 10. Zero dependencies.",
-  "bin": { "agentguard": "bin/agentguard.js" },
+  "bin": { "provekit": "bin/provekit.js" },
   "scripts": {
-    "demo": "node bin/agentguard.js examples/vulnerable.js",
+    "demo": "node bin/provekit.js vulnerable-example.js",
     "test": "node --test"
   },
   "keywords": ["security", "ai", "llm", "owasp", "secrets", "sast", "devsecops", "cursor", "claude-code", "code-review", "ci"],
   "author": "Harrison C. Songolo",
   "license": "MIT",
+  "homepage": "https://github.com/Th3Circle-app/provekit#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Th3Circle-app/provekit.git" },
+  "bugs": { "url": "https://github.com/Th3Circle-app/provekit/issues" },
   "engines": { "node": ">=18" },
   "files": ["bin", "src", "README.md", "LICENSE"]
 }

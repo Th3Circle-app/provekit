@@ -6,6 +6,8 @@
 npx provekit
 ```
 
+![provekit scanning AI-generated code from the CLI, grouping findings by severity with OWASP tags](assets/cli.png)
+
 ---
 
 ## Why this exists
@@ -28,24 +30,18 @@ Precision in practice: it skips parameterized SQL, env-var reads, bcrypt/argon h
 
 ## See it work
 
+**In your browser, no install:** paste code into the free web scanner at **[xkaii.studio/labs/scanner](https://xkaii.studio/labs/scanner)**. It runs 100% client-side, your code never leaves the page.
+
+![The provekit web scanner: paste code and get findings by severity, each mapped to OWASP with a fix](assets/scanner.png)
+
+Or run it locally on the bundled example:
+
 ```bash
 git clone https://github.com/Th3Circle-app/provekit && cd provekit
 npm run demo
 ```
 
-```
-provekit — 9 issues found
-
-CRITICAL vulnerable-example.js:8   [A07 / A02 · Leaked secret]
-         AWS access key ID committed to code
-CRITICAL vulnerable-example.js:21  [A03 · Command injection]
-         Shell command built with string interpolation — command injection risk
-HIGH     vulnerable-example.js:15  [A10 · SSRF]
-         User-controlled input reaches a server-side HTTP request — SSRF risk...
-...
-Summary: 3 critical, 4 high, 2 medium
-✗ failing.
-```
+Both surfaces run the same engine and produce the CLI report shown at the top: 9 issues on the planted-vulnerability sample, grouped critical → high → medium, each with an OWASP mapping and a one-line fix.
 
 ## Usage
 

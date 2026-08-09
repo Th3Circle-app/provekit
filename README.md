@@ -18,6 +18,14 @@ Coding agents (Cursor, Claude Code, Copilot) ship code fast. They also paste API
 
 Precision in practice: it skips parameterized SQL, env-var reads, bcrypt/argon hashes, and placeholder values, and in `test/`, `examples/`, and fixture files it stays quiet on the insecure things test code does on purpose (disabling TLS, fake secrets) while still catching a **real** leaked key anywhere. On axios + express (372 files, heavily audited) it reports zero findings; on a file full of planted vulnerabilities it finds all nine.
 
+## Thorough, fast, and honest about its own coverage
+
+- **Scans a lot of code, fast.** ~285,000 lines across 444 files in ~1.5 seconds. Point it at a whole repo, a single file, or a `git diff`.
+- **Reads every line fully.** It doesn't quietly skip long or minified lines, that was a padding-evasion gap (hide a secret behind a wall of junk and slip past). Every rule now runs on every line within a generous cap.
+- **Never silently overlooks.** If a line genuinely is too long to scan safely, it says so with a `line-too-long` notice instead of dropping it. You always know what wasn't covered.
+- **ReDoS-safe.** Every rule regex is bounded, no catastrophic backtracking. A 40,000-character pathological line scans in ~1ms.
+- **87 tests**, including the padding-evasion and coverage-transparency cases.
+
 ## What it catches
 
 | OWASP | Examples |

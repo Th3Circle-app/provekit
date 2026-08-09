@@ -55,10 +55,20 @@ test('safe: sha256', () => clean("crypto.createHash('sha256')"));
 // ---------- EDGE CASES: must not crash / must behave ----------
 test('edge: empty string', () => clean(''));
 test('edge: whitespace only', () => clean('   \n\t\n   '));
-test('edge: secret on a long line is still caught (no evasion); only pathological >20k lines are skipped', () => {
-  const f = scanText('x'.repeat(2000) + " 'AKIAIOSFODNN7EXAMPLE'", 'x.js');
-  assert.ok(f.some(x => x.id === 'aws-access-key'), 'long-line secret evaded detection');
-  clean('x'.repeat(20001) + " 'AKIAIOSFODNN7EXAMPLE'"); // >20k chars = skipped as pathological (DoS guard)
+test('edge: secret on a long line is caught (padding evasion closed)', () => {
+  // Padding a line used to hide the secret behind the length caps. Now it does not.
+  let f = scanText('x'.repeat(2000) + " 'AKIAIOSFODNN7EXAMPLE'", 'x.js');
+  assert.ok(f.some(x => x.id === 'aws-access-key'), '2k-padded secret evaded');
+  f = scanText('x'.repeat(30000) + " 'AKIAIOSFODNN7EXAMPLE'", 'x.js');
+  assert.ok(f.some(x => x.id === 'aws-access-key'), '30k-padded secret evaded (was skipped before)');
+});
+test('edge: insecure PATTERN on a long line is caught, not just secrets', () => {
+  const f = scanText('a'.repeat(3000) + '; fetch(req.query.url)', 'app.js');
+  assert.ok(f.some(x => x.id === 'ssrf-user-url'), 'pattern on a long line was skipped');
+});
+test('edge: a line too long to scan is REPORTED, never silently dropped', () => {
+  const f = scanText('x'.repeat(60000) + " 'AKIAIOSFODNN7EXAMPLE'", 'x.js');
+  assert.ok(f.some(x => x.id === 'line-too-long'), 'over-cap line was silently overlooked');
 });
 test('edge: unicode does not crash', () => { assert.doesNotThrow(() => scanText('const 变量 = "日本語テスト 🔒";\nconst emoji = "🚀🔥";', 'x.js')); });
 test('edge: ignore comment suppresses', () => clean("x = 'AKIAIOSFODNN7EXAMPLE' // provekit-ignore"));

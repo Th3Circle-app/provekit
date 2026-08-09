@@ -19,14 +19,26 @@ function isLowTrust(file) { return !!file && (LOW_TRUST.test(file) || LOW_TRUST_
 // A rule survives in low-trust paths only if it's a specific-format secret detector (near-zero FP).
 const highConfidenceSecret = (rule) => rule.category === 'Leaked secret' && !!rule.re;
 
+// Absolute per-line cap. Every rule regex is bounded (no nested/exponential
+// quantifiers), so this is a runaway guard, not a coverage limiter. Real source
+// lines are far shorter; anything past this is almost certainly minified/data.
+const MAX_LINE = 50000;
+
 function scanLine(line, file, lineNo, out, lowTrust) {
   if (!line) return;
-  const len = line.length;
-  if (len > 20000) return;              // pathological / minified / data line — skip (DoS guard)
   if (ALLOW.test(line)) return;
-  const secretsOnly = len > 2000;       // long line: run only the cheap, anchored secret detectors (evasion-resistant, ReDoS-safe)
+  const len = line.length;
+  if (len > MAX_LINE) {
+    // Do NOT silently overlook it. Report that a line was too long to scan, so
+    // the coverage gap is visible and a human can split or review it manually.
+    out.push({ file, line: lineNo, id: 'line-too-long', owasp: '-',
+      category: 'Scan coverage', severity: 'low',
+      why: `Line is ${len} chars — skipped to stay fast. If it is code, split it; if it is minified/data, ignore. Not scanned for vulnerabilities.`,
+      snippet: line.trim().slice(0, 80) + '…' });
+    return;
+  }
+  // Every rule runs on every line within the cap — no category is skipped.
   for (const rule of ALL) {
-    if (secretsOnly && rule.category !== 'Leaked secret') continue;
     if (lowTrust && !highConfidenceSecret(rule)) continue;
     const hit = rule.test ? rule.test(line, file) : rule.re.test(line);
     if (hit) {

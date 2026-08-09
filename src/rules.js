@@ -44,7 +44,7 @@ const PATTERNS = [
   { id: 'new-function', owasp: 'A03', category: 'Injection', severity: 'high',
     why: 'new Function(...) runs arbitrary code, same risk as eval', re: /new\s+Function\s*\(/ }, // provekit-ignore: detection pattern, not a vuln
   { id: 'child-process-interp', owasp: 'A03', category: 'Command injection', severity: 'critical',
-    why: 'Shell command built with string interpolation — command injection risk', re: /(?:exec|execSync|spawn|spawnSync)\s*\(\s*[`'"][^`'"]*\$\{/ },
+    why: 'Shell command built with string interpolation — command injection risk', re: /(?:exec|execSync|spawn|spawnSync)\s*\(\s*[`'"][^`'"]{0,500}\$\{/ },
   // SQL built from a string that STARTS with an (uppercase) SQL keyword and contains interpolation. Case-sensitive to avoid .update()/.select() methods.
   { id: 'sql-string-concat', owasp: 'A03', category: 'SQL injection', severity: 'medium',
     why: 'SQL query built with string interpolation/concatenation — verify it is parameterized, not user-injectable',
@@ -59,7 +59,7 @@ const PATTERNS = [
   { id: 'weak-hash-pw', owasp: 'A02', category: 'Weak crypto', severity: 'low',
     why: 'MD5/SHA1 used — insecure if hashing passwords or for integrity (fine for non-security checksums)', re: /createHash\s*\(\s*['"](?:md5|sha1)['"]\s*\)/i },
   { id: 'insecure-random-token', owasp: 'A02', category: 'Weak randomness', severity: 'medium',
-    why: 'Math.random() used to generate a token/secret/id — not cryptographically secure', re: /(?:token|secret|otp|nonce|api[_-]?key|session)\w*\s*[:=][^;\n]*Math\.random\s*\(/i },
+    why: 'Math.random() used to generate a token/secret/id — not cryptographically secure', re: /(?:token|secret|otp|nonce|api[_-]?key|session)\w{0,40}\s*[:=][^;\n]{0,300}Math\.random\s*\(/i },
   { id: 'cors-wildcard', owasp: 'A05', category: 'Misconfiguration', severity: 'medium',
     why: 'CORS Access-Control-Allow-Origin set to "*" — allows any site', re: /Access-Control-Allow-Origin['"]?\s*[:,]\s*['"]\*['"]/i },
   { id: 'debug-true', owasp: 'A05', category: 'Misconfiguration', severity: 'low',

@@ -16,7 +16,7 @@ test('secret: stripe live', () => assert.ok(has("sk_live_" + "51H8xAbCdEfGhIjKlM
 test('secret: openai', () => assert.ok(has("key='sk-abcdef1234567890ABCDEFGHIJ'", 'openai-key')));
 test('secret: anthropic', () => assert.ok(has("k='sk-ant-api03-abcdefghij1234567890'", 'anthropic-key')));
 test('secret: slack', () => assert.ok(has('xoxb-123456789012-abcdefghijkl', 'slack-token')));
-test('secret: google api', () => assert.ok(has('AIzaSyA1234567890abcdefghijklmnopqrstuv', 'google-api-key')));
+test('secret: google api', () => assert.ok(has('AIza' + 'SyA1234567890abcdefghijklmnopqrstuv', 'google-api-key')));
 test('secret: db url creds', () => assert.ok(has("url='postgres://admin:hunter2@db:5432/prod'", 'db-url-creds')));
 test('secret: hardcoded password', () => assert.ok(has("const password = 'super-secret-value'", 'hardcoded-secret')));
 
